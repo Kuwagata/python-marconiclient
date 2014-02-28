@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from marconiclient.queues.v1 import core
+from marconiclient.queues.v1.iterators import message_iterator
 from marconiclient.queues.v1 import message
 
 
@@ -207,4 +208,4 @@ class Queue(object):
                                      self._name,
                                      **params)
 
-        return message._MessageIterator(self, msgs)
+        return message_iterator._MessageIterator(self, msgs)

@@ -16,6 +16,7 @@
 import uuid
 
 from marconiclient.queues.v1 import core
+from marconiclient.queues.v1.iterators import queue_iterator
 from marconiclient.queues.v1 import queues
 from marconiclient.queues.v1 import shard
 from marconiclient import transport
@@ -101,7 +102,7 @@ class Client(object):
 
         queue_list = core.queue_list(trans, req, **params)
 
-        return queues._QueueIterator(self, queue_list)
+        return queue_iterator._QueueIterator(self, queue_list)
 
     def follow(self, ref):
         """Follows ref.
