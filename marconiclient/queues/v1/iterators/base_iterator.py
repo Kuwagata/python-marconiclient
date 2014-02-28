@@ -52,7 +52,7 @@ class _Iterator(object):
 
     @abc.abstractmethod
     def create_object(self, args):
-        """Must be subclassed
+        """Must be subclassed to define object creation
 
         :param args: Args used for object creation
         :type listing_response: Dict
