@@ -19,7 +19,28 @@ import six
 
 @six.add_metaclass(abc.ABCMeta)
 class _Iterator(object):
+    """Base Iterator
 
+    This iterator is not meant to be used outside
+    the scope of this package. The iterator gets
+    a dictionary as returned by a listing endpoint.
+    
+    Subclasses of this base class determine the key
+    to iterate over, as well as the means of creating
+    the objects contained within.
+
+    If there are no objects left to return, the iterator
+    will try to load more by following the `next` rel link
+    type.
+
+    The iterator raises a StopIteration exception if the server
+    doesn't return more objects after a `next-page` call.
+
+    :param client: The client instance used by the queue
+    :type client: `v1.Client`
+    :param listing_response: Response returned by the listing call
+    :type listing_response: Dict
+    """
     def __init__(self, client, listing_response):
         self._client = client
 
@@ -31,18 +52,35 @@ class _Iterator(object):
 
     @abc.abstractmethod
     def create_object(self, args):
-        pass
+        """Must be subclassed
+        
+        :param args: Args used for object creation
+        :type listing_response: Dict
+        """
 
     @abc.abstractmethod
     def get_iterables(self, iterables):
-        pass
+        """Must be subclassed to determine key to iterate over
+        
+        :param iterables: Dictionary to iterate over
+        :type iterables: Dict
+        """
 
     def _next_page(self):
         for link in self._links:
             if link['rel'] == 'next':
+                # NOTE(flaper87): We already have the
+                # ref for the next set of messages, lets
+                # just follow it.
                 iterables = self._client.follow(link['href'])
 
+                # NOTE(flaper87): Since we're using
+                # `.follow`, the empty result will
+                # be None. Consider making the API
+                # return an empty dict for consistency.
                 if iterables:
+                    # NOTE(Kuwagata): Child class determines
+                    # the key to iterate over.
                     self.get_iterables(iterables)
                     return
         raise StopIteration
@@ -53,6 +91,9 @@ class _Iterator(object):
         except IndexError:
             self._next_page()
             return self.next()
+        # NOTE(Kuwagata): Object creation is deferred to the
+        # child classes.
         return self.create_object(args)
 
+    # NOTE(flaper87): Py2K support
     next = __next__
