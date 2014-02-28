@@ -24,7 +24,7 @@ class _Iterator(object):
     This iterator is not meant to be used outside
     the scope of this package. The iterator gets
     a dictionary as returned by a listing endpoint.
-    
+
     Subclasses of this base class determine the key
     to iterate over, as well as the means of creating
     the objects contained within.
@@ -53,7 +53,7 @@ class _Iterator(object):
     @abc.abstractmethod
     def create_object(self, args):
         """Must be subclassed
-        
+
         :param args: Args used for object creation
         :type listing_response: Dict
         """
@@ -61,7 +61,7 @@ class _Iterator(object):
     @abc.abstractmethod
     def get_iterables(self, iterables):
         """Must be subclassed to determine key to iterate over
-        
+
         :param iterables: Dictionary to iterate over
         :type iterables: Dict
         """

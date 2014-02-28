@@ -20,19 +20,6 @@ from marconiclient.queues.v1 import queues
 class _QueueIterator(base_iterator._Iterator):
     """Queue Iterator
 
-    This iterator is not meant to be used outside
-    the scope of this package. The iterator gets
-    a dictionary as returned by the queue listing
-    endpoint and iterates over the messages in the
-    `queues` key.
-
-    If there are no queues left to return, the iterator
-    will try to load more by following the `next` rel link
-    type.
-
-    The iterator raises a StopIteration exception if the server
-    doesn't return more queues after a `next-page` call.
-
     :param client: The client instance
     :type client: `v1.Client`
     :param listing_response: Response returned by the listing call
